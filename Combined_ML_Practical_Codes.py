@@ -1,4 +1,4 @@
-k import warnings
+import warnings
 warnings.filterwarnings("ignore")
 
 import pandas as pd
@@ -8,34 +8,23 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn.datasets import load_iris, fetch_20newsgroups
-
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, KFold, cross_val_score
-
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder, normalize
-
 from sklearn.feature_extraction.text import TfidfVectorizer
-
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.svm import SVC, LinearSVC
 from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB, MultinomialNB
-
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-
 from sklearn.cluster import KMeans
-
 from sklearn.pipeline import Pipeline
 from sklearn.decomposition import PCA
-
 from xgboost import XGBClassifier, plot_importance
-
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix, classification_report, ConfusionMatrixDisplay, log_loss, mean_absolute_error, mean_squared_error, r2_score
-
 from sklearn.utils.class_weight import compute_sample_weight
 
-print("All libraries imported successfully!")
 # ===========================================================================
 # Notebook code cell 2: Step 0 — Setup
 # ===========================================================================
