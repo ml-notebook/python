@@ -58,6 +58,133 @@ plt.rcParams["figure.figsize"] = (6, 4)
 print("All libraries loaded")
 
 
+# IMPORT LIBRARIES
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import normalize
+from sklearn.tree import DecisionTreeRegressor, plot_tree
+from sklearn.metrics import mean_squared_error
+
+import warnings
+warnings.filterwarnings('ignore')
+
+# LOAD DATASET
+df = pd.read_csv("yellow_tripdata.csv")
+print(df.head())
+print(df.shape)
+
+# FIND CORRELATION
+corr = df.corr(numeric_only=True)['tip_amount'].drop('tip_amount')
+print(corr)
+
+corr.plot(kind='barh', figsize=(10, 6))
+plt.title("Correlation with Tip Amount")
+plt.show()
+
+# SEPARATE X AND Y
+y = df['tip_amount'].values.astype('float32')
+
+X = df.drop('tip_amount', axis=1)
+features = X.columns.tolist()
+
+X = normalize(X.values, axis=1, norm='l1')
+
+# TRAIN TEST SPLIT
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# BUILD DECISION TREE REGRESSION MODEL
+model = DecisionTreeRegressor(
+    criterion='squared_error',
+    max_depth=8,
+    random_state=35
+)
+
+# TRAIN MODEL
+model.fit(X_train, y_train)
+
+# PREDICTION
+y_pred = model.predict(X_test)
+
+# MODEL EVALUATION
+print("MSE:", mean_squared_error(y_test, y_pred))
+print("R2 Score:", model.score(X_test, y_test))
+
+# DECISION TREE PLOT
+plt.figure(figsize=(20, 10))
+plot_tree(
+    model,
+    feature_names=features,
+    filled=True,
+    rounded=True,
+    max_depth=3,
+    fontsize=8
+)
+plt.title("Decision Tree Regression")
+plt.show()
+
+# Q1: CHANGE MAX_DEPTH TO 12
+model = DecisionTreeRegressor(
+    criterion='squared_error',
+    max_depth=12,
+    random_state=35
+)
+
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+print("MSE with depth 12:", mean_squared_error(y_test, y_pred))
+print("R2 with depth 12:", model.score(X_test, y_test))
+
+# Q2: FIND TOP 3 IMPORTANT FEATURES
+importance = pd.Series(
+    model.feature_importances_,
+    index=features
+)
+
+print("Top 3 Important Features:")
+print(importance.sort_values(ascending=False).head(3))
+
+# Q3: REMOVE 4 LEAST CORRELATED FEATURES
+corr = df.corr(numeric_only=True)['tip_amount'].drop('tip_amount')
+
+remove = corr.abs().nsmallest(4).index
+
+print("Removed Features:", list(remove))
+
+X_new = df.drop(columns=['tip_amount'] + list(remove))
+y_new = df['tip_amount'].values.astype('float32')
+
+X_new = normalize(X_new.values, axis=1, norm='l1')
+
+# SPLIT NEW DATA
+X_train, X_test, y_train, y_test = train_test_split(
+    X_new, y_new, test_size=0.3, random_state=42
+)
+
+# TRAIN NEW MODEL
+model = DecisionTreeRegressor(
+    criterion='squared_error',
+    max_depth=8,
+    random_state=35
+)
+
+model.fit(X_train, y_train)
+
+# PREDICTION
+y_pred = model.predict(X_test)
+
+# FINAL EVALUATION
+print("MSE after removing features:",
+      mean_squared_error(y_test, y_pred))
+
+print("R2 after removing features:",
+      model.score(X_test, y_test))
+
 # ===========================================================================
 # Notebook code cell 5: 1. Load the dataset
 # ===========================================================================
